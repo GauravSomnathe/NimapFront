@@ -1,0 +1,75 @@
+<div class="page-container">
+  <div class="card">
+    <div class="card-header">
+      <div class="header-content">
+        <h2>Product Master</h2>
+        <span class="product-count">Total: {{ products.length }} items</span>
+      </div>
+    </div>
+
+    <div class="form-section">
+      <div class="grid-form">
+        <div class="field">
+          <label>Product Name</label>
+          <input [(ngModel)]="productName" placeholder="e.g. Wireless Mouse" class="custom-input" />
+        </div>
+
+        <div class="field">
+          <label>Category Selection</label>
+          <div class="category-selection-row">
+            <select [(ngModel)]="categoryId" class="custom-input">
+              <option [ngValue]="null" disabled selected>-- Select --</option>
+              <option *ngFor="let cat of categories" [value]="cat.category_id">
+                {{ cat.category_name }}
+              </option>
+            </select>
+
+            <input [(ngModel)]="newCategoryName" placeholder="New Category..." class="custom-input small-input" />
+            
+            <button class="btn-secondary" (click)="addCategory()" [disabled]="!newCategoryName">
+              Add
+            </button>
+          </div>
+        </div>
+
+        <div class="field actions">
+          <button class="btn-primary" (click)="addProduct()" [disabled]="!productName || categoryId === null">
+            Save Product
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <div class="table-container">
+      <table>
+        <thead>
+          <tr>
+            <th>ID</th>
+            <th>Product Name</th>
+            <th>Category Name</th>
+            <th>Cat. ID</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let p of pagedProducts">
+            <td><span class="badge">#{{ p.product_id }}</span></td>
+            <td class="product-bold">{{ p.product_name }}</td>
+            <td><span class="category-tag">{{ p.category_name }}</span></td>
+            <td class="text-muted">{{ p.category_id }}</td>
+          </tr>
+          <tr *ngIf="products.length === 0">
+            <td colspan="4" class="empty-state">No products added yet.</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="card-footer">
+      <div class="pagination-controls">
+        <button (click)="prev()" [disabled]="page === 1" class="btn-page">&laquo; Prev</button>
+        <div class="page-indicator">Page <strong>{{ page }}</strong></div>
+        <button (click)="next()" [disabled]="products.length <= page * pageSize" class="btn-page">Next &raquo;</button>
+      </div>
+    </div>
+  </div>
+</div>

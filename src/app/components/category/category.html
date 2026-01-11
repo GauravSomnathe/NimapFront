@@ -1,0 +1,51 @@
+<div class="page-container">
+  <div class="card">
+    <div class="card-header">
+      <h2>Category Master</h2>
+      <p>Manage your product classifications</p>
+    </div>
+
+    <div class="form-section">
+      <div class="input-group">
+        <input
+          [(ngModel)]="categoryName"
+          placeholder="Enter Category Name"
+          class="custom-input"
+        />
+        <button [class]="editId ? 'btn-update' : 'btn-add'" (click)="saveCategory()">
+          {{ editId ? 'Update' : 'Add' }}
+        </button>
+        <button *ngIf="editId" class="btn-cancel" (click)="reset()">Cancel</button>
+      </div>
+    </div>
+
+    <div class="table-container">
+      <table>
+        <thead>
+          <tr>
+            <th>ID</th>
+            <th>Category Name</th>
+            <th class="text-center">Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let c of categories" [class.editing]="editId === c.category_id">
+            <td><span class="badge">#{{ c.category_id }}</span></td>
+            <td><strong>{{ c.category_name }}</strong></td>
+            <td class="text-center">
+              <button class="btn-icon edit" (click)="editCategory(c)" title="Edit">
+                Edit
+              </button>
+              <button class="btn-icon delete" (click)="deleteCategory(c.category_id)" title="Delete">
+                Delete
+              </button>
+            </td>
+          </tr>
+          <tr *ngIf="categories.length === 0">
+            <td colspan="3" class="empty-state">No categories found. Add one above!</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>

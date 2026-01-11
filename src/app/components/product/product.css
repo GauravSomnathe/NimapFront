@@ -1,0 +1,28 @@
+.page-container { padding: 2rem; background: #f4f7f6; min-height: 100vh; display: flex; justify-content: center; font-family: 'Segoe UI', sans-serif; }
+.card { background: white; border-radius: 8px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); width: 100%; max-width: 1000px; overflow: hidden; }
+.card-header { padding: 1.5rem; border-bottom: 1px solid #eee; background: #fff; }
+.header-content { display: flex; justify-content: space-between; align-items: center; }
+
+.form-section { padding: 1.5rem; background: #fafafa; border-bottom: 1px solid #eee; }
+.grid-form { display: grid; grid-template-columns: 1fr 2fr auto; gap: 20px; align-items: end; }
+.field { display: flex; flex-direction: column; gap: 8px; }
+.field label { font-size: 12px; font-weight: bold; color: #666; text-transform: uppercase; }
+
+.category-selection-row { display: flex; gap: 8px; }
+.custom-input { padding: 10px; border: 1px solid #ddd; border-radius: 4px; font-size: 14px; }
+.small-input { width: 140px; }
+
+.btn-primary { background: #27ae60; color: white; border: none; padding: 10px 20px; border-radius: 4px; font-weight: 600; cursor: pointer; }
+.btn-secondary { background: #2980b9; color: white; border: none; padding: 10px; border-radius: 4px; cursor: pointer; }
+button:disabled { background: #ccc; cursor: not-allowed; }
+
+table { width: 100%; border-collapse: collapse; }
+th { text-align: left; padding: 12px; background: #f8f9fa; color: #777; font-size: 13px; }
+td { padding: 12px; border-bottom: 1px solid #eee; font-size: 14px; }
+
+.category-tag { background: #e1f5fe; color: #0288d1; padding: 4px 10px; border-radius: 20px; font-size: 12px; font-weight: 600; }
+.badge { color: #999; font-family: monospace; }
+.product-bold { font-weight: 600; color: #333; }
+
+.pagination-controls { display: flex; justify-content: center; align-items: center; gap: 20px; padding: 1rem; }
+.btn-page { background: white; border: 1px solid #ddd; padding: 5px 15px; border-radius: 4px; cursor: pointer; }
