@@ -1,41 +1,31 @@
 <div class="page-container">
   <div class="card">
     <div class="card-header">
-      <div class="header-content">
-        <h2>Product Master</h2>
-        <span class="product-count">Total: {{ products.length }} items</span>
-      </div>
+      <h2>{{ isEditing ? 'Edit Product' : 'Product Master' }}</h2>
     </div>
 
     <div class="form-section">
       <div class="grid-form">
         <div class="field">
           <label>Product Name</label>
-          <input [(ngModel)]="productName" placeholder="e.g. Wireless Mouse" class="custom-input" />
+          <input [(ngModel)]="productName" placeholder="Enter name" class="custom-input" />
         </div>
 
         <div class="field">
           <label>Category Selection</label>
-          <div class="category-selection-row">
+          <div class="category-selection">
             <select [(ngModel)]="categoryId" class="custom-input">
-              <option [ngValue]="null" disabled selected>-- Select --</option>
-              <option *ngFor="let cat of categories" [value]="cat.category_id">
-                {{ cat.category_name }}
-              </option>
+              <option [ngValue]="null">-- Select --</option>
+              <option *ngFor="let cat of categories" [value]="cat.category_id">{{cat.category_name}}</option>
             </select>
-
-            <input [(ngModel)]="newCategoryName" placeholder="New Category..." class="custom-input small-input" />
-            
-            <button class="btn-secondary" (click)="addCategory()" [disabled]="!newCategoryName">
-              Add
-            </button>
+            <input [(ngModel)]="newCategoryName" placeholder="New Cat" class="custom-input small-input" />
+            <button class="btn-add-cat" (click)="addCategory()">Add</button>
           </div>
         </div>
 
         <div class="field actions">
-          <button class="btn-primary" (click)="addProduct()" [disabled]="!productName || categoryId === null">
-            Save Product
-          </button>
+          <button class="btn-primary" (click)="saveProduct()">{{ isEditing ? 'Update' : 'Save' }}</button>
+          <button *ngIf="isEditing" class="btn-ghost" (click)="cancelEdit()">Cancel</button>
         </div>
       </div>
     </div>
@@ -46,30 +36,42 @@
           <tr>
             <th>ID</th>
             <th>Product Name</th>
-            <th>Category Name</th>
-            <th>Cat. ID</th>
+            <th>Category</th>
+            <th>Actions</th>
           </tr>
         </thead>
         <tbody>
           <tr *ngFor="let p of pagedProducts">
-            <td><span class="badge">#{{ p.product_id }}</span></td>
-            <td class="product-bold">{{ p.product_name }}</td>
+            <td>#{{ p.product_id }}</td>
+            <td><strong>{{ p.product_name }}</strong></td>
             <td><span class="category-tag">{{ p.category_name }}</span></td>
-            <td class="text-muted">{{ p.category_id }}</td>
-          </tr>
-          <tr *ngIf="products.length === 0">
-            <td colspan="4" class="empty-state">No products added yet.</td>
+            <td>
+              <button class="btn-icon edit" (click)="startEdit(p)">✎</button>
+              <button class="btn-icon delete" (click)="deleteProduct(p.product_id)">🗑</button>
+            </td>
           </tr>
         </tbody>
       </table>
     </div>
 
-    <div class="card-footer">
-      <div class="pagination-controls">
-        <button (click)="prev()" [disabled]="page === 1" class="btn-page">&laquo; Prev</button>
-        <div class="page-indicator">Page <strong>{{ page }}</strong></div>
-        <button (click)="next()" [disabled]="products.length <= page * pageSize" class="btn-page">Next &raquo;</button>
-      </div>
+   <div class="card-footer">
+  <div class="footer-info">
+    Showing <strong>{{ pagedProducts.length }}</strong> of <strong>{{ products.length }}</strong> products
+  </div>
+
+  <div class="pagination-group">
+    <button (click)="prev()" [disabled]="page === 1" class="btn-nav">
+      <span class="arrow">←</span> Previous
+    </button>
+    
+    <div class="page-numbers">
+      <span class="page-pill">Page {{ page }}</span>
     </div>
+
+    <button (click)="next()" [disabled]="products.length <= page * pageSize" class="btn-nav">
+      Next <span class="arrow">→</span>
+    </button>
+  </div>
+</div>
   </div>
 </div>

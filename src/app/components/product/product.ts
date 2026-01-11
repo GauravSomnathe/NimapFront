@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
-import { CommonModule } from '@angular/common'; // Fixes *ngFor and *ngIf
-import { FormsModule } from '@angular/forms';   // Fixes the NG8002 (ngModel) error
+import { CommonModule } from '@angular/common';
+import { FormsModule } from '@angular/forms';
 
 @Component({
   selector: 'app-product',
@@ -15,6 +15,10 @@ export class ProductComponent {
   categoryId: number | null = null;
   newCategoryName: string = '';
 
+  // State Management
+  isEditing: boolean = false;
+  editId: number | null = null;
+
   // Pagination Settings
   page: number = 1;
   pageSize: number = 5;
@@ -28,61 +32,85 @@ export class ProductComponent {
 
   products: any[] = [];
 
-  // Logic: Add a new category to the dropdown
+  // Logic: Add a new category
   addCategory() {
     if (!this.newCategoryName.trim()) return;
-
-    const exists = this.categories.some(
-      (cat) => cat.category_name.toLowerCase() === this.newCategoryName.trim().toLowerCase()
-    );
-
+    const exists = this.categories.some(c => c.category_name.toLowerCase() === this.newCategoryName.trim().toLowerCase());
+    
     if (exists) {
-      alert('This category already exists!');
+      alert('Category exists!');
       return;
     }
 
-    const newCat = {
-      category_id: this.categories.length + 1,
-      category_name: this.newCategoryName.trim()
-    };
-
+    const newCat = { category_id: this.categories.length + 1, category_name: this.newCategoryName.trim() };
     this.categories.push(newCat);
-    this.categoryId = newCat.category_id; // Auto-select for the user
-    this.newCategoryName = ''; // Reset input
+    this.categoryId = newCat.category_id;
+    this.newCategoryName = '';
   }
 
-  // Logic: Add product to the list
-  addProduct() {
+  // Logic: Save (Create or Update) Product
+  saveProduct() {
     if (!this.productName.trim() || this.categoryId === null) return;
-
     const selectedCategory = this.categories.find(cat => cat.category_id == this.categoryId);
 
-    this.products.unshift({
-      product_id: this.products.length + 1,
-      product_name: this.productName,
-      category_name: selectedCategory?.category_name,
-      category_id: Number(this.categoryId)
-    });
+    if (this.isEditing && this.editId !== null) {
+      // UPDATE Logic
+      const index = this.products.findIndex(p => p.product_id === this.editId);
+      if (index !== -1) {
+        this.products[index] = {
+          ...this.products[index],
+          product_name: this.productName,
+          category_id: Number(this.categoryId),
+          category_name: selectedCategory?.category_name
+        };
+      }
+      this.cancelEdit();
+    } else {
+      // CREATE Logic
+      this.products.unshift({
+        product_id: Date.now(), // Unique ID for local demo
+        product_name: this.productName,
+        category_name: selectedCategory?.category_name,
+        category_id: Number(this.categoryId)
+      });
+      this.resetForm();
+    }
+  }
 
-    // Reset Form
+  // Logic: Delete Product
+  deleteProduct(id: number) {
+    if (confirm('Delete this product?')) {
+      this.products = this.products.filter(p => p.product_id !== id);
+      // Adjust page if current page becomes empty
+      if (this.pagedProducts.length === 0 && this.page > 1) this.page--;
+    }
+  }
+
+  // Logic: Enter Edit Mode
+  startEdit(product: any) {
+    this.isEditing = true;
+    this.editId = product.product_id;
+    this.productName = product.product_name;
+    this.categoryId = product.category_id;
+  }
+
+  cancelEdit() {
+    this.isEditing = false;
+    this.editId = null;
+    this.resetForm();
+  }
+
+  resetForm() {
     this.productName = '';
     this.categoryId = null;
   }
 
-  // Client-side pagination helper (for local demo)
+  // Pagination
   get pagedProducts() {
-    const startIndex = (this.page - 1) * this.pageSize;
-    return this.products.slice(startIndex, startIndex + this.pageSize);
+    const start = (this.page - 1) * this.pageSize;
+    return this.products.slice(start, start + this.pageSize);
   }
 
-  // Pagination Controls
-  prev() {
-    if (this.page > 1) this.page--;
-  }
-
-  next() {
-    if (this.products.length > this.page * this.pageSize) {
-      this.page++;
-    }
-  }
+  prev() { if (this.page > 1) this.page--; }
+  next() { if (this.products.length > this.page * this.pageSize) this.page++; }
 }
